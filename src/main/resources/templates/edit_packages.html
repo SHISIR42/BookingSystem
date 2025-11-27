@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Edit Package</title>
+<link th:replace="~{fragments/navbar :: head}">
+</head>
+
+<body>
+<div th:replace="~{fragments/navbar :: navigation('packages')}"></div>
+<h1>Edit Package</h1>
+<hr>
+<br><br>
+<form th:action="@{/update-packages/{id}(id=${package.pid})}" th:object="${package}" method="post">
+	Name: <input type="text" th:field="*{pname}" required><br><br>
+	Price: <input type="number" step="0.01" th:field="*{ppriced}" required><br><br>
+	Description: <input type="text" th:field="*{pdescription}" required><br><br>
+	<input type="submit" value="Update Package">
+	<a href="/packages"><button type="button">Cancel</button></a>
+</form>
+</body>
+</html>

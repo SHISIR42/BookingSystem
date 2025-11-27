@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Add Package</title>
+<link th:replace="~{fragments/navbar :: head}">
+</head>
+
+<body>
+<div th:replace="~{fragments/navbar :: navigation('add-packages')}"></div>
+<h1>Add New Package</h1>
+<hr>
+<br><br>
+<form action="/packages" method="post">
+Name: <input type="text" name="pname"><br><br>
+Price:<input type="number" name="ppriced"><br><br>
+Description: <input type="text" name="pdescription"><br><br>
+<input type="submit" value="Submit">
+
+</form>
+</body>
+</html>

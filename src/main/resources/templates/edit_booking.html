@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Edit Booking</title>
+<link th:replace="~{fragments/navbar :: head}">
+<script>
+function updatePackageDetails() {
+    var select = document.getElementById('packageSelect');
+    var selectedOption = select.options[select.selectedIndex];
+    
+    document.getElementById('packageId').value = selectedOption.getAttribute('data-id');
+    document.getElementById('packageName').value = selectedOption.getAttribute('data-name');
+    document.getElementById('totalAmount').value = selectedOption.getAttribute('data-price');
+}
+</script>
+</head>
+
+<body>
+<div th:replace="~{fragments/navbar :: navigation('bookings')}"></div>
+<h1>Edit Booking</h1>
+<hr>
+<br><br>
+<form th:action="@{/update-booking/{id}(id=${booking.bookingId})}" th:object="${booking}" method="post">
+	Customer Name: <input type="text" th:field="*{customerName}" required><br><br>
+	Email: <input type="email" th:field="*{customerEmail}" required><br><br>
+	Phone: <input type="tel" th:field="*{customerPhone}" required><br><br>
+	
+	Select Package: 
+	<select id="packageSelect" onchange="updatePackageDetails()" required>
+		<option value="">-- Choose Package --</option>
+		<option th:each="pkg : ${packages}" 
+		        th:attr="data-id=${pkg.pid}, data-name=${pkg.pname}, data-price=${pkg.ppriced}"
+		        th:selected="${pkg.pid == booking.packageId}"
+		        th:text="${pkg.pname} + ' - $' + ${pkg.ppriced}">
+		</option>
+	</select><br><br>
+	
+	<input type="hidden" id="packageId" th:field="*{packageId}">
+	<input type="hidden" id="packageName" th:field="*{packageName}">
+	
+	Booking Date: <input type="date" th:field="*{bookingDate}" required><br><br>
+	Total Amount: <input type="number" id="totalAmount" step="0.01" th:field="*{totalAmount}" required><br><br>
+	Status: 
+	<select th:field="*{status}" required>
+		<option value="Pending">Pending</option>
+		<option value="Confirmed">Confirmed</option>
+		<option value="Cancelled">Cancelled</option>
+	</select><br><br>
+	<input type="submit" value="Update Booking">
+	<a href="/bookings"><button type="button">Cancel</button></a>
+</form>
+</body>
+</html>

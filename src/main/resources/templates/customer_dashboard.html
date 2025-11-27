@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Customer Dashboard</title>
+<link th:replace="~{fragments/navbar :: head}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body {
+        background-color: #f0f8ff;
+        margin: 0;
+        padding: 0;
+    }
+    .hero {
+        background: linear-gradient(135deg, #2821a9 0%, #667eea 100%);
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .hero p {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    .section-title {
+        text-align: center;
+        color: #2821a9;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        font-weight: 600;
+    }
+    .card-grid {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+    .dashboard-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 40px 30px;
+        width: 320px;
+        text-align: center;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+    }
+    .dashboard-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        border-color: #2821a9;
+    }
+    .dashboard-card i {
+        font-size: 60px;
+        color: #2821a9;
+        margin-bottom: 20px;
+    }
+    .dashboard-card h3 {
+        color: #333;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    .dashboard-card p {
+        color: #666;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    .btn-action {
+        display: inline-block;
+        background: #c11616;
+        color: white;
+        padding: 12px 30px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-action:hover {
+        background: #159557;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+        .card-grid {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navigation('customer-dashboard')}"></div>
+
+<div class="hero">
+    <h1>Welcome Back, [[${un}]]! 🎉</h1>
+    <p>Explore amazing packages and create unforgettable memories</p>
+</div>
+
+<div class="container">
+    <h2 class="section-title">What would you like to do today?</h2>
+    
+    <div class="card-grid">
+        <div class="dashboard-card">
+            <i class="fas fa-gift"></i>
+            <h3>Browse Packages</h3>
+            <p>Discover exciting packages tailored for your perfect experience</p>
+            <a href="/customer/browse-packages" class="btn-action">Explore Now</a>
+        </div>
+        
+        <div class="dashboard-card">
+            <i class="fas fa-calendar-check"></i>
+            <h3>Book a Package</h3>
+            <p>Reserve your preferred package with instant confirmation</p>
+            <a href="/customer/book-package" class="btn-action">Book Now</a>
+        </div>
+        
+        <div class="dashboard-card">
+            <i class="fas fa-ticket-alt"></i>
+            <h3>My Bookings</h3>
+            <p>View and manage all your bookings in one place</p>
+            <a href="/customer/my-bookings" class="btn-action">View Bookings</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

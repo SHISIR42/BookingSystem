@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Home</title>
+<link th:replace="~{fragments/navbar :: head}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navigation('home')}"></div>
+<h1>Welcome: [[${un}]]</h1>
+<hr>
+<h2>Admin Dashboard</h2>
+<p>Use the menu above to manage packages and bookings.</p>
+</body>
+</html>
