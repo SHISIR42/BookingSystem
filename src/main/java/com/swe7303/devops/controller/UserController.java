@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.swe7303.devops.model.User;
+import com.swe7303.devops.service.PackageService;
 import com.swe7303.devops.service.UserService;
 import jakarta.servlet.http.HttpSession;
 
@@ -17,40 +18,55 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping({ "/login", "/" })
-	public String getLogin() {
+	@Autowired
+	private PackageService packageService;
 
+	@GetMapping("/")
+	public String getHome(Model model) {
+		model.addAttribute("packages", packageService.getAllPackages());
+		return "home";
+	}
+
+	// Customer Login
+	@GetMapping("/login")
+	public String getCustomerLogin() {
 		return "login";
-
 	}
 
 	@PostMapping("/login")
-	public String postLogin(@ModelAttribute User user, String loginRole, Model model, HttpSession session) {
+	public String postCustomerLogin(@ModelAttribute User user, Model model, HttpSession session) {
 		User usr = userService.userLogin(user.getEmail(), user.getPassword());
-		if (usr != null) {
-			// Validate that the selected role matches the user's actual role
-			if (!usr.getRole().equalsIgnoreCase(loginRole)) {
-				model.addAttribute("error", "Invalid credentials for the selected role!");
-				return "login";
-			}
-
+		if (usr != null && "CUSTOMER".equalsIgnoreCase(usr.getRole())) {
 			session.setAttribute("loggedInUser", usr);
 			session.setAttribute("username", usr.getUsername());
 			session.setAttribute("userId", usr.getId());
 			session.setAttribute("userRole", usr.getRole());
 			session.setAttribute("userEmail", usr.getEmail());
-
-			// Redirect to unified dashboard - it will route based on role
-			return "redirect:/dashboard";
+			return "redirect:/customer-dashboard";
 		}
-		model.addAttribute("error", "Sorry, user not found!");
+		model.addAttribute("error", "Invalid customer credentials!");
 		return "login";
 	}
 
-	@GetMapping("/home")
-	public String getHome(HttpSession session, Model model) {
-		// Redirect to unified dashboard
-		return "redirect:/dashboard";
+	// Admin Login
+	@GetMapping("/admin/login")
+	public String getAdminLogin() {
+		return "admin_login";
+	}
+
+	@PostMapping("/admin/login")
+	public String postAdminLogin(@ModelAttribute User user, Model model, HttpSession session) {
+		User usr = userService.userLogin(user.getEmail(), user.getPassword());
+		if (usr != null && "ADMIN".equalsIgnoreCase(usr.getRole())) {
+			session.setAttribute("loggedInUser", usr);
+			session.setAttribute("username", usr.getUsername());
+			session.setAttribute("userId", usr.getId());
+			session.setAttribute("userRole", usr.getRole());
+			session.setAttribute("userEmail", usr.getEmail());
+			return "redirect:/admin-dashboard";
+		}
+		model.addAttribute("error", "Invalid admin credentials!");
+		return "admin_login";
 	}
 
 	@GetMapping("/admin-dashboard")
@@ -86,14 +102,6 @@ public class UserController {
 		return "users";
 	}
 
-	// UPDATE - Show edit form
-	@GetMapping("/edit-user/{id}")
-	public String editUserForm(@PathVariable("id") Integer id, Model model) {
-		User user = userService.getUserById(id);
-		model.addAttribute("user", user);
-		return "edit_user";
-	}
-
 	// UPDATE - Save edited user
 	@PostMapping("/update-user/{id}")
 	public String updateUser(@PathVariable("id") Integer id,
@@ -117,12 +125,17 @@ public class UserController {
 
 	@PostMapping("/signup")
 	public String postSignup(@ModelAttribute User user) {
-		if (user.getRole() == null || user.getRole().isEmpty()) {
-			user.setRole("CUSTOMER"); // Default role
-		}
+		user.setRole("CUSTOMER"); // All signups are customers
 		userService.userSignup(user);
 		return "redirect:/login";
+	}
 
+	// Admin adds new staff
+	@PostMapping("/admin/add-staff")
+	public String addStaff(@ModelAttribute User user) {
+		user.setRole("ADMIN"); // All staff are admins
+		userService.userSignup(user);
+		return "redirect:/users";
 	}
 
 }

@@ -10,16 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.swe7303.devops.model.Booking;
 import com.swe7303.devops.service.BookingService;
-import com.swe7303.devops.service.PackageService;
 
 @Controller
 public class BookingController {
 
     @Autowired
     private BookingService bookingService;
-
-    @Autowired
-    private PackageService packageService;
 
     // READ - List all bookings
     @GetMapping("/bookings")
@@ -28,28 +24,11 @@ public class BookingController {
         return "bookings";
     }
 
-    // CREATE - Show add form
-    @GetMapping("/add-booking")
-    public String addBookingForm(Model model) {
-        model.addAttribute("booking", new Booking());
-        model.addAttribute("packages", packageService.getAllPackages());
-        return "add_booking";
-    }
-
-    // CREATE - Save new booking
+    // CREATE - Save new booking (via modal)
     @PostMapping("/bookings")
     public String saveBooking(@ModelAttribute("booking") Booking booking) {
         bookingService.saveBooking(booking);
         return "redirect:/bookings";
-    }
-
-    // UPDATE - Show edit form
-    @GetMapping("/edit-booking/{id}")
-    public String editBookingForm(@PathVariable("id") Integer id, Model model) {
-        Booking booking = bookingService.getBookingById(id);
-        model.addAttribute("booking", booking);
-        model.addAttribute("packages", packageService.getAllPackages());
-        return "edit_booking";
     }
 
     // UPDATE - Save edited booking

@@ -24,26 +24,11 @@ public class PackageController {
 		return "packages";
 	}
 
-	// CREATE - Show add form
-	@GetMapping("/add-packages")
-	public String getPackages(Model model) {
-		model.addAttribute("package", new Package());
-		return "addpackages";
-	}
-
-	// CREATE - Save new package
+	// CREATE - Save new package (via modal)
 	@PostMapping("/packages")
 	public String postPackages(@ModelAttribute("package") Package pkg, Model model) {
 		packageService.savePackage(pkg);
 		return "redirect:/packages";
-	}
-
-	// UPDATE - Show edit form
-	@GetMapping("/edit-packages/{id}")
-	public String editPackageForm(@PathVariable("id") Integer id, Model model) {
-		Package pkg = packageService.getPackageById(id);
-		model.addAttribute("package", pkg);
-		return "edit_packages";
 	}
 
 	// UPDATE - Save edited package
