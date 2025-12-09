@@ -1,19 +1,10 @@
 pipeline {
     agent any
     
-    tools {
-        maven 'Maven-3.9'
-        jdk 'JDK-21'
-    }
-    
     environment {
         DOCKER_IMAGE = 'booking-system'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DOCKER_REGISTRY = 'ccr'
-        MYSQL_ROOT_PASSWORD = credentials('mysql-root-password')
-        MYSQL_DATABASE = credentials('mysql-database')
-        MYSQL_USER = credentials('mysql-user')
-        MYSQL_PASSWORD = credentials('mysql-password')
     }
     
     stages {
@@ -29,9 +20,9 @@ pipeline {
                 echo 'Building the application...'
                 script {
                     if (isUnix()) {
-                        sh './mvnw clean package -DskipTests'
+                        sh 'mvn clean package -DskipTests'
                     } else {
-                        bat './mvnw.cmd clean package -DskipTests'
+                        bat 'mvn clean package -DskipTests'
                     }
                 }
             }
@@ -42,9 +33,9 @@ pipeline {
                 echo 'Running unit tests...'
                 script {
                     if (isUnix()) {
-                        sh './mvnw test'
+                        sh 'mvn test'
                     } else {
-                        bat './mvnw.cmd test'
+                        bat 'mvn test'
                     }
                 }
             }
