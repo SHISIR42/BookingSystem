@@ -5,7 +5,7 @@
 }
 
 .welcome-section {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: linear-gradient(135deg, #2821a9 0%, #667eea 100%);
     color: white;
     padding: 40px;
     border-radius: 10px;
@@ -46,7 +46,7 @@
 
 .btn-action {
     display: inline-block;
-    background: #f5576c;
+    background: #c11616;
     color: white;
     padding: 10px 25px;
     text-decoration: none;
@@ -56,5 +56,5 @@
 }
 
 .btn-action:hover {
-    background: #e04456;
+    background: #159557;
 }

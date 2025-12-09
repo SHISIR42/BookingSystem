@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2821a9 0%, #667eea 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,7 +18,7 @@ body {
 
 h2 {
     text-align: center;
-    color: #667eea;
+    color: #2821a9;
     margin-bottom: 30px;
 }
 
@@ -43,13 +43,13 @@ input, select {
 
 input:focus, select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #2821a9;
 }
 
 .btn-signup {
     width: 100%;
     padding: 12px;
-    background: #667eea;
+    background: #c11616;
     color: white;
     border: none;
     border-radius: 5px;
@@ -60,7 +60,7 @@ input:focus, select:focus {
 }
 
 .btn-signup:hover {
-    background: #5568d3;
+    background: #159557;
 }
 
 .login-link {
@@ -70,7 +70,7 @@ input:focus, select:focus {
 }
 
 .login-link a {
-    color: #667eea;
+    color: #2821a9;
     text-decoration: none;
     font-weight: bold;
 }

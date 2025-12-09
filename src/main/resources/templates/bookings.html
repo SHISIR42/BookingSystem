@@ -36,7 +36,7 @@
             <td th:text="${booking.customerPhone}"></td>
             <td th:text="${booking.packageName}"></td>
             <td th:text="${booking.bookingDate}"></td>
-            <td th:text="'$' + ${booking.totalAmount}"></td>
+            <td th:text="'£' + ${booking.totalAmount}"></td>
             <td>
                 <span th:if="${booking.paymentMethod != null}" th:text="${booking.paymentMethod}" 
                       style="display: block; font-weight: 600;"></span>

@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2821a9 0%, #667eea 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,7 +18,7 @@ body {
 
 h1 {
     text-align: center;
-    color: #667eea;
+    color: #2821a9;
     margin-bottom: 10px;
     font-size: 28px;
 }
@@ -65,13 +65,13 @@ input {
 
 input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #2821a9;
 }
 
 .btn-login {
     width: 100%;
     padding: 12px;
-    background: #667eea;
+    background: #c11616;
     color: white;
     border: none;
     border-radius: 5px;
@@ -82,7 +82,7 @@ input:focus {
 }
 
 .btn-login:hover {
-    background: #5568d3;
+    background: #159557;
 }
 
 .signup-link {
@@ -92,7 +92,7 @@ input:focus {
 }
 
 .signup-link a {
-    color: #667eea;
+    color: #2821a9;
     text-decoration: none;
     font-weight: bold;
 }
@@ -114,13 +114,13 @@ input:focus {
 }
 
 .role-option:hover {
-    border-color: #667eea;
-    background: #f5f7ff;
+    border-color: #2821a9;
+    background: #f0f8ff;
 }
 
 .role-option.selected {
-    border-color: #667eea;
-    background: #667eea;
+    border-color: #2821a9;
+    background: #2821a9;
     color: white;
 }
 

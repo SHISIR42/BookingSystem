@@ -28,7 +28,7 @@
             <td th:text="${pkg.pid}"></td>
             <td th:text="${pkg.pname}"></td>
             <td th:text="${pkg.pdescription}"></td>
-            <td th:text="'$' + ${pkg.ppriced}"></td>
+            <td th:text="'£' + ${pkg.ppriced}"></td>
             <td>
                 <button class="btn-edit" onclick="editPackage(this)" 
                         th:attr="data-id=${pkg.pid}, data-name=${pkg.pname}, data-desc=${pkg.pdescription}, data-price=${pkg.ppriced}">

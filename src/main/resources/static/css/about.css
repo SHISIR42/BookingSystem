@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
+    --primary-color: #2821a9;
+    --secondary-color: #667eea;
     --accent-color: #f093fb;
 }
 
@@ -112,7 +112,7 @@ body {
 }
 
 .mission-vision {
-    background: #f8f9fa;
+    background: #f0f8ff;
     padding: 80px 0;
 }
 

@@ -110,7 +110,7 @@
             <!-- Customer Logo -->
             <a href="/customer-dashboard" class="logo" th:if="${session.userRole == 'CUSTOMER'}">
                 <i class="fas fa-box-open"></i>
-                <h1>Travel Booking System</h1>
+                <h1>Booking System</h1>
             </a>
             
             <nav>
@@ -150,12 +150,12 @@
                     </li>
                     <li th:if="${session.userRole == 'CUSTOMER'}">
                         <a href="/customer/book-package" th:classappend="${activePage == 'book-package'} ? 'active' : ''">
-                            <i class="fas fa-calendar-plus"></i> Book Tickets
+                            <i class="fas fa-calendar-plus"></i> Book Package
                         </a>
                     </li>
                     <li th:if="${session.userRole == 'CUSTOMER'}">
                         <a href="/customer/my-bookings" th:classappend="${activePage == 'my-bookings'} ? 'active' : ''">
-                            <i class="fas fa-ticket-alt"></i> My Bookings
+                            <i class="fas fa-list-alt"></i> My Bookings
                         </a>
                     </li>
                     
@@ -170,5 +170,7 @@
         </div>
     </header>
 </div>
+
 </body>
 </html>
+

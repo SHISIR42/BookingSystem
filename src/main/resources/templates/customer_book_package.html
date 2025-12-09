@@ -11,7 +11,7 @@
 <div th:replace="~{fragments/navbar :: navigation('book-package')}"></div>
 
 <div class="hero">
-    <h1>Book Your Tickets</h1>
+    <h1>Book Your Package</h1>
     <p>Complete your booking in just a few steps</p>
 </div>
 
@@ -34,8 +34,10 @@
             
             <div class="form-group">
                 <label><i class="fas fa-calendar"></i> Visit Date</label>
-                <input type="date" th:field="*{bookingDate}" id="bookingDate"
-                       th:value="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" required>
+                <div class="date-picker-wrapper">
+                    <input type="date" th:field="*{bookingDate}" id="bookingDate" class="simple-date-picker" required>
+                    <small class="date-helper">Select your preferred visit date</small>
+                </div>
             </div>
             
             <div class="form-group">
@@ -65,32 +67,53 @@
                 </div>
             </div>
             
-            <h3 style="color: #2821a9; margin: 2rem 0 1rem 0;"><i class="fas fa-credit-card"></i> Payment Method</h3>
+            <h3 style="color: #2821a9; margin: 2rem 0 1rem 0;"><i class="fas fa-credit-card"></i> Payment Method (Mock Payment - Demo Only)</h3>
+            <div class="mock-payment-notice">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Demo Mode:</strong> This is a simulated payment system for demonstration purposes. No real payment will be processed.</p>
+            </div>
+            
             <div class="payment-options">
                 <div class="payment-option" id="qrOption">
                     <i class="fas fa-qrcode"></i>
-                    <p>QR Payment</p>
+                    <p>Mock QR Payment</p>
                 </div>
                 <div class="payment-option" id="cardOption">
                     <i class="far fa-credit-card"></i>
-                    <p>Card Payment</p>
+                    <p>Mock Card Payment</p>
                 </div>
             </div>
             <input type="hidden" th:field="*{paymentMethod}" id="paymentMethod" required>
             <input type="hidden" th:field="*{transactionId}" id="transactionId">
-            <input type="hidden" th:field="*{paymentStatus}" id="paymentStatus" value="Pending">
+            <input type="hidden" th:field="*{paymentStatus}" id="paymentStatus" value="Completed">
             
             <div class="qr-code" id="qrCode">
-                <p style="font-weight: 600; color: #2821a9;">Scan this QR code to pay</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TravelBooking-USD-0" 
-                     alt="QR Code for Payment" id="qrImage">
-                <p style="margin-top: 1rem; color: #666;">After payment, you will receive confirmation via SMS/Email</p>
+                <p style="font-weight: 600; color: #2821a9;">Demo QR Code Payment</p>
+                <div class="mock-qr-container">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=DEMO-PAYMENT" 
+                         alt="Demo QR Code" id="qrImage">
+                    <div class="mock-overlay">DEMO</div>
+                </div>
+                <p style="margin-top: 1rem; color: #666;">
+                    <i class="fas fa-check-circle" style="color: #159557;"></i> 
+                    Payment simulation successful! Click "Complete Booking" to proceed.
+                </p>
             </div>
             
             <div class="card-payment" id="cardPayment">
+                <div class="test-card-info">
+                    <p><strong>Test Card Numbers:</strong></p>
+                    <ul>
+                        <li><i class="fab fa-cc-visa"></i> 4111 1111 1111 1111 (Visa)</li>
+                        <li><i class="fab fa-cc-mastercard"></i> 5555 5555 5555 4444 (MasterCard)</li>
+                        <li><i class="fab fa-cc-amex"></i> 3782 822463 10005 (Amex)</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">Use any future date for expiry and any 3-digit CVV</p>
+                </div>
+                
                 <div class="form-group">
                     <label>Card Number</label>
-                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                    <input type="text" id="cardNumber" placeholder="4111 1111 1111 1111" maxlength="19" value="4111 1111 1111 1111">
                     <div class="card-icons">
                         <i class="fab fa-cc-visa"></i>
                         <i class="fab fa-cc-mastercard"></i>
@@ -101,17 +124,17 @@
                 <div style="display: flex; gap: 1rem;">
                     <div class="form-group" style="flex: 1;">
                         <label>Expiry Date</label>
-                        <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                        <input type="text" id="expiry" placeholder="12/25" maxlength="5" value="12/25">
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label>CVV</label>
-                        <input type="text" id="cvv" placeholder="123" maxlength="3">
+                        <input type="text" id="cvv" placeholder="123" maxlength="3" value="123">
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label>Name on Card</label>
-                    <input type="text" id="cardName" placeholder="Enter cardholder name">
+                    <input type="text" id="cardName" placeholder="Test User" value="Test User">
                 </div>
             </div>
             

@@ -56,14 +56,46 @@ public class CustomerController {
 
     // Save booking
     @PostMapping("/book-package")
-    public String saveBooking(@ModelAttribute("booking") Booking booking, HttpSession session) {
+    public String saveBooking(@ModelAttribute("booking") Booking booking, HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             return "redirect:/login";
         }
-        booking.setStatus("Pending"); // Default status
-        bookingService.saveBooking(booking);
-        return "redirect:/customer/my-bookings";
+
+        // Set customer email from session to link booking to this user
+        String userEmail = (String) session.getAttribute("userEmail");
+        if (userEmail != null) {
+            booking.setCustomerEmail(userEmail);
+        }
+
+        // If payment is completed, set status to Confirmed
+        if ("Completed".equals(booking.getPaymentStatus())) {
+            booking.setStatus("Confirmed");
+        } else {
+            booking.setStatus("Pending");
+        }
+
+        Booking savedBooking = bookingService.saveBooking(booking);
+
+        // Redirect to confirmation page
+        return "redirect:/customer/booking-confirmation/" + savedBooking.getBookingId();
+    }
+
+    // View booking confirmation
+    @GetMapping("/booking-confirmation/{id}")
+    public String bookingConfirmation(@PathVariable("id") Integer id, HttpSession session, Model model) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return "redirect:/login";
+        }
+
+        Booking booking = bookingService.getBookingById(id);
+        if (booking == null) {
+            return "redirect:/customer/my-bookings";
+        }
+
+        model.addAttribute("booking", booking);
+        return "booking_confirmation";
     }
 
     // View own bookings
@@ -74,23 +106,15 @@ public class CustomerController {
             return "redirect:/login";
         }
 
-        // Get user email from session or from loggedInUser object
         String userEmail = (String) session.getAttribute("userEmail");
         if (userEmail == null) {
-            User user = (User) session.getAttribute("loggedInUser");
-            if (user != null) {
-                userEmail = user.getEmail();
-            } else {
-                // If no user info available, redirect to login
-                return "redirect:/login";
-            }
+            return "redirect:/login";
         }
 
-        // Filter bookings by customer email
+        // Filter bookings by logged-in customer's email
         List<Booking> allBookings = bookingService.getAllBookings();
-        final String email = userEmail;
         List<Booking> myBookings = allBookings.stream()
-                .filter(b -> b.getCustomerEmail() != null && b.getCustomerEmail().equals(email))
+                .filter(b -> userEmail.equals(b.getCustomerEmail()))
                 .collect(Collectors.toList());
 
         model.addAttribute("bookings", myBookings);
