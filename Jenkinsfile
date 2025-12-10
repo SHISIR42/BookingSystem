@@ -65,6 +65,7 @@ pipeline {
             }
         }
         
+        /* Commented out - requires Docker Hub credentials and docker-compose.yml
         stage('Docker Push') {
             steps {
                 echo 'Pushing Docker image to registry...'
@@ -119,6 +120,7 @@ pipeline {
                 }
             }
         }
+        */
     }
     
     post {
@@ -132,19 +134,7 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed!'
-            script {
-                // Rollback to previous version
-                echo 'Rolling back to previous stable version...'
-                if (isUnix()) {
-                    sh 'docker-compose down'
-                    sh 'docker pull ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest'
-                    sh 'docker-compose up -d'
-                } else {
-                    bat 'docker-compose down'
-                    bat 'docker pull ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest'
-                    bat 'docker-compose up -d'
-                }
-            }
+            // Rollback would happen here if deployment stages were active
         }
         unstable {
             echo 'Pipeline is unstable'
