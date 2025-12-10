@@ -13,11 +13,13 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - swe7303-network
+    command: --max-connections=50 --innodb-buffer-pool-size=128M
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 5s
       retries: 10
       interval: 10s
+    mem_limit: 512m
 
   app:
     build:
@@ -31,11 +33,13 @@ services:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      JAVA_OPTS: "-Xmx512m -Xms256m -XX:MaxMetaspaceSize=128m"
     ports:
       - "8080:8080"
     networks:
       - swe7303-network
     restart: unless-stopped
+    mem_limit: 768m
 
 volumes:
   mysql-data:
