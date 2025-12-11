@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'booking-system'
         DOCKER_TAG = "${BUILD_NUMBER}"
-        DOCKER_REGISTRY = 'ccr'
+        DOCKER_REGISTRY = 'your-dockerhub-username'
     }
     
     stages {
@@ -14,7 +14,7 @@ pipeline {
                 checkout scm
             }
         }
-        
+
         stage('Build') {
             steps {
                 echo 'Building the application...'
@@ -27,7 +27,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Test') {
             steps {
                 echo 'Running unit tests...'
@@ -46,7 +46,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Code Quality Analysis') {
             steps {
                 echo 'Analyzing code quality...'
@@ -54,29 +54,53 @@ pipeline {
                 // sh 'mvn sonar:sonar'
             }
         }
-        
-        stage('Docker Build') {
+
+        stage('Docker Build & Push') {
             steps {
-                echo 'Building Docker image...'
+                echo 'Building and pushing Docker image...'
                 script {
                     docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                     docker.build("${DOCKER_IMAGE}:latest")
+                    // Uncomment and configure credentials for Docker Hub push
+                    // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                    //     docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                    //     docker.image("${DOCKER_IMAGE}:latest").push()
+                    // }
                 }
             }
         }
-        
-        /* Commented out - requires Docker Hub credentials and docker-compose.yml
-        stage('Docker Push') {
+
+        stage('Deploy') {
             steps {
-                echo 'Pushing Docker image to registry...'
+                echo 'Triggering deployment (manual or via Render)...'
+                // Add deployment script or Render API call here if available
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                echo 'Checking application health...'
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
-                        docker.image("${DOCKER_IMAGE}:latest").push()
+                    // Example: curl health endpoint and check status
+                    def result = bat(script: 'curl -s -o NUL -w "%{http_code}" http://localhost:8080/actuator/health', returnStdout: true).trim()
+                    if (result != '200') {
+                        error("Health check failed! Rolling back...")
                     }
                 }
             }
         }
+    }
+
+    post {
+        failure {
+            echo 'Deployment failed. Rollback to previous version if possible.'
+            // Add rollback logic here (e.g., redeploy previous Docker image)
+        }
+        always {
+            echo 'Pipeline finished. Check Render dashboard or local logs for monitoring.'
+        }
+    }
+}
         
         stage('Deploy to Staging') {
             steps {
