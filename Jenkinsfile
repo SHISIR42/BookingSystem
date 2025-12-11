@@ -101,24 +101,4 @@ pipeline {
         }
     }
 }
-        */
-    
-    
-    post {
-        always {
-            echo 'Pipeline execution completed'
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline executed successfully!'
-            // Add notification (email, Slack, etc.)
-        }
-        failure {
-            echo 'Pipeline failed!'
-            // Rollback would happen here if deployment stages were active
-        }
-        unstable {
-            echo 'Pipeline is unstable'
-        }
-    }
 
