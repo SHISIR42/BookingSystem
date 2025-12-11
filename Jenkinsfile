@@ -83,7 +83,7 @@ pipeline {
                 echo 'Checking application health...'
                 script {
                     // Example: curl health endpoint and check status
-                    def result = bat(script: 'curl -s -o NUL -w "%{http_code}" http://localhost:8080/actuator/health', returnStdout: true).trim()
+                    def result = bat(script: 'curl -s -o NUL -w "%{http_code}" http://localhost:3000/actuator/health', returnStdout: true).trim()
                     if (result != '200') {
                         error("Health check failed! Rolling back...")
                     }
