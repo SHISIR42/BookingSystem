@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'booking-system'
         DOCKER_TAG = "${BUILD_NUMBER}"
-        DOCKER_REGISTRY = 'your-dockerhub-username'
+        DOCKER_REGISTRY = 'shisir27'
     }
     
     stages {
