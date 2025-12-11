@@ -101,51 +101,8 @@ pipeline {
         }
     }
 }
-        
-        stage('Deploy to Staging') {
-            steps {
-                echo 'Deploying to staging environment...'
-                script {
-                    if (isUnix()) {
-                        sh 'docker-compose down'
-                        sh 'docker-compose up -d'
-                    } else {
-                        bat 'docker-compose down'
-                        bat 'docker-compose up -d'
-                    }
-                }
-            }
-        }
-        
-        stage('Health Check') {
-            steps {
-                echo 'Performing health check...'
-                script {
-                    sleep(time: 30, unit: 'SECONDS')
-                    if (isUnix()) {
-                        sh 'curl -f http://localhost:8080/actuator/health || exit 1'
-                    } else {
-                        bat 'powershell -Command "Invoke-WebRequest -Uri http://localhost:8080 -UseBasicParsing"'
-                    }
-                }
-            }
-        }
-        
-        stage('Deploy to Production') {
-            when {
-                branch 'main'
-            }
-            steps {
-                input message: 'Deploy to Production?', ok: 'Deploy'
-                echo 'Deploying to production environment...'
-                script {
-                    // Add production deployment steps
-                    echo 'Production deployment would happen here'
-                }
-            }
-        }
         */
-    }
+    
     
     post {
         always {
@@ -164,4 +121,4 @@ pipeline {
             echo 'Pipeline is unstable'
         }
     }
-}
+
