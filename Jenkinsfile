@@ -102,7 +102,7 @@ pipeline {
                 echo 'Performing health check on local build...'
                 script {
                     def status = bat(
-                        script: "curl --silent --fail http://localhost:8080/actuator/health",
+                        script: "curl --silent --fail http://localhost:3000/actuator/health",
                         returnStatus: true
                     )
 
