@@ -9,7 +9,6 @@ pipeline {
     }
     
     stages {
-
         stage('Checkout') {
             steps {
                 echo 'Checking out code from repository...'
@@ -79,23 +78,24 @@ pipeline {
             }
         }
 
-       stage('Health Check') {
-    steps {
-        echo 'Checking application health...'
-        script {
-            def response = bat(
-                script: "curl -s -o NUL -w \"%{http_code}\" http://localhost:3000/actuator/health",
-                returnStdout: true
-            ).trim()
+        stage('Health Check') {
+            steps {
+                echo 'Checking application health...'
+                script {
+                    def response = bat(
+                        script: 'curl -s -o NUL -w "%{http_code}" http://localhost:3000/actuator/health',
+                        returnStdout: true
+                    ).trim()
 
-            echo "Received HTTP Code: ${response}"
+                    echo "Received HTTP Code: ${response}"
 
-            if (response != "200") {
-                error("Health check failed! Expected 200 but got ${response}")
+                    if (response != "200") {
+                        error("Health check failed! Expected 200 but got ${response}")
+                    }
+                }
             }
         }
     }
-}
 
     post {
         failure {
