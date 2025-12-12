@@ -97,7 +97,6 @@ pipeline {
     }
 }
 
-
     post {
         failure {
             echo '❌ Deployment failed. Rollback to previous version if possible.'
@@ -106,5 +105,4 @@ pipeline {
             echo 'Pipeline finished. Check Render dashboard or local logs for monitoring.'
         }
     }
-}
 }
