@@ -82,15 +82,14 @@ pipeline {
             steps {
                 echo 'Checking application health...'
                 script {
-                    def response = bat(
-                        script: 'curl -s -o NUL -w "%{http_code}" http://localhost:3000/actuator/health',
-                        returnStdout: true
-                    ).trim()
-
-                    echo "Received HTTP Code: ${response}"
-
-                    if (response != "200") {
-                        error("Health check failed! Expected 200 but got ${response}")
+                    def status = bat(
+                        script: "curl --silent --fail http://localhost:8080/actuator/health",
+                        returnStatus: true
+                    )
+                    if (status != 0) {
+                        error("❌ Health check failed! Application is NOT running.")
+                    } else {
+                        echo "✔ Application is healthy."
                     }
                 }
             }
