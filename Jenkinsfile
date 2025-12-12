@@ -1,4 +1,5 @@
-// Jenkinsfile sync test comment
+// Jenkinsfile - CI/CD Pipeline for Booking System (Render Deployment)
+
 pipeline {
     agent any
     
@@ -6,19 +7,24 @@ pipeline {
         DOCKER_IMAGE = 'booking-system'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DOCKER_REGISTRY = 'shisir27'
+        
+        // Render API key stored in Jenkins credentials
+        RENDER_API_KEY = credentials('render-api-key')
+        RENDER_SERVICE_ID = 'srv-d4slknnpm1nc73c639k0'
     }
     
     stages {
+
         stage('Checkout') {
             steps {
-                echo 'Checking out code from repository...'
+                echo 'Checking out source code...'
                 // checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building the application...'
+                echo 'Building Java application...'
                 script {
                     if (isUnix()) {
                         sh 'mvn clean package -DskipTests'
@@ -43,66 +49,82 @@ pipeline {
             post {
                 always {
                     junit '**/target/surefire-reports/*.xml'
-                    echo 'Test results published'
                 }
             }
         }
 
         stage('Code Quality Analysis') {
             steps {
-                echo 'Analyzing code quality...'
-                // sh 'mvn sonar:sonar'
+                echo 'Running code quality checks (placeholder)...'
+                // Add SonarQube here if needed
             }
         }
 
-        stage('Docker Build & Push') {
+        stage('Docker Build') {
             steps {
-                echo 'Building Docker image...'
+                echo "Building Docker image ${DOCKER_IMAGE}:${DOCKER_TAG}..."
                 script {
-                    def img = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                    docker.build("${DOCKER_IMAGE}:latest")
-
-                    // Push only if registry configured
-                    // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                    //     img.push()
-                    //     docker.image("${DOCKER_IMAGE}:latest").push()
-                    // }
+                    docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}")
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Docker Push (Optional)') {
+            when {
+                expression { false }  // Change to true when ready to push to Docker Hub
+            }
             steps {
-                echo 'Triggering deployment...'
-                // Add deployment script or API call for Render
+                echo 'Pushing Docker image to Docker Hub...'
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                        docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                    }
+                }
             }
         }
 
-      stage('Health Check') {
-    steps {
-        echo 'Checking application health...'
-        script {
-            def status = bat(
-                script: "curl --silent --fail http://localhost:3000/actuator/health",
-                returnStatus: true
-            )
-
-            if (status != 0) {
-                error("❌ Health check failed! Application is NOT running.")
-            } else {
-                echo "✔ Application is healthy."
+        stage('Deploy to Render') {
+            steps {
+                echo "Deploying to Render service: ${RENDER_SERVICE_ID}"
+                script {
+                    bat """
+                    curl -X POST ^
+                    -H "Accept: application/json" ^
+                    -H "Authorization: Bearer ${RENDER_API_KEY}" ^
+                    https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys
+                    """
+                }
             }
         }
-    }
-}
+
+        stage('Health Check') {
+            steps {
+                echo 'Performing health check on local build...'
+                script {
+                    def status = bat(
+                        script: "curl --silent --fail http://localhost:8080/actuator/health",
+                        returnStatus: true
+                    )
+
+                    if (status != 0) {
+                        error("❌ Health check FAILED — application not responding.")
+                    } else {
+                        echo "✔ Health check PASSED — application is healthy."
+                    }
+                }
+            }
+        }
     }
 
     post {
+        success {
+            echo '🎉 Deployment completed successfully!'
+        }
         failure {
-            echo '❌ Deployment failed. Rollback to previous version if possible.'
+            echo '❌ Deployment failed — review logs and consider rollback.'
         }
         always {
-            echo 'Pipeline finished. Check Render dashboard or local logs for monitoring.'
+            echo 'Pipeline execution complete.'
         }
     }
 }
