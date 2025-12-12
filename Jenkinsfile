@@ -9,10 +9,11 @@ pipeline {
     }
     
     stages {
+
         stage('Checkout') {
             steps {
                 echo 'Checking out code from repository...'
-                checkout scm
+                // checkout scm
             }
         }
 
@@ -51,20 +52,20 @@ pipeline {
         stage('Code Quality Analysis') {
             steps {
                 echo 'Analyzing code quality...'
-                // Add SonarQube analysis if configured
                 // sh 'mvn sonar:sonar'
             }
         }
 
         stage('Docker Build & Push') {
             steps {
-                echo 'Building and pushing Docker image...'
+                echo 'Building Docker image...'
                 script {
-                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    def img = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                     docker.build("${DOCKER_IMAGE}:latest")
-                    // Uncomment and configure credentials for Docker Hub push
+
+                    // Push only if registry configured
                     // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                    //     docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                    //     img.push()
                     //     docker.image("${DOCKER_IMAGE}:latest").push()
                     // }
                 }
@@ -73,8 +74,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Triggering deployment (manual or via Render)...'
-                // Add deployment script or Render API call here if available
+                echo 'Triggering deployment...'
+                // Add deployment script or API call for Render
             }
         }
 
@@ -82,10 +83,17 @@ pipeline {
             steps {
                 echo 'Checking application health...'
                 script {
-                    // Example: curl health endpoint and check status
-                    def result = bat(script: 'curl -s -o NUL -w "%{http_code}" http://localhost:3000/actuator/health', returnStdout: true).trim()
-                    if (result != '200') {
-                        error("Health check failed! Rolling back...")
+                    def response = bat(
+                        script: 'curl -s -o NUL -w "%{http_code}" http://localhost:3000/actuator/health',
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Health Check HTTP Code: ${response}"
+
+                    if (response != "200") {
+                        error("❌ Health check failed! Expected 200 but got ${response}")
+                    } else {
+                        echo "✔ Application is healthy."
                     }
                 }
             }
@@ -94,12 +102,10 @@ pipeline {
 
     post {
         failure {
-            echo 'Deployment failed. Rollback to previous version if possible.'
-            // Add rollback logic here (e.g., redeploy previous Docker image)
+            echo '❌ Deployment failed. Rollback to previous version if possible.'
         }
         always {
             echo 'Pipeline finished. Check Render dashboard or local logs for monitoring.'
         }
     }
 }
-
