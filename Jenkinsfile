@@ -78,22 +78,23 @@ pipeline {
             }
         }
 
-        stage('Health Check') {
-            steps {
-                echo 'Checking application health...'
-                script {
-                    def status = bat(
-                        script: "curl --silent --fail http://localhost:8080/actuator/health",
-                        returnStatus: true
-                    )
-                    if (status != 0) {
-                        error("❌ Health check failed! Application is NOT running.")
-                    } else {
-                        echo "✔ Application is healthy."
-                    }
-                }
+      stage('Health Check') {
+    steps {
+        echo 'Checking application health...'
+        script {
+            def status = bat(
+                script: "curl --silent --fail http://localhost:3000/actuator/health",
+                returnStatus: true
+            )
+
+            if (status != 0) {
+                error("❌ Health check failed! Application is NOT running.")
+            } else {
+                echo "✔ Application is healthy."
             }
         }
+    }
+}
     }
 
     post {
